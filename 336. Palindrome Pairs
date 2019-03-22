@@ -1,0 +1,77 @@
+
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+
+Example 1:
+
+Input: ["abcd","dcba","lls","s","sssll"]
+Output: [[0,1],[1,0],[3,2],[2,4]] 
+Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
+
+
+class Solution {
+    public List<List<Integer>> palindromePairs(String[] words) {
+        List<List<Integer>> res = new ArrayList<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        for(int i=0; i<words.length; i++){
+            map.put(words[i],i);
+        }
+        
+        // .length针对的是数组长度
+        if(map.containsKey("")){
+            int blank = map.get("");
+            for(int i=0;i<words.length;i++){
+               if( isPalinderome(words[i]) && i != blank){
+                   // aslist 数组转list
+                   res.add(Arrays.asList(blank,i));
+                   res.add(Arrays.asList(i,blank));
+               }
+            }
+        }
+        
+        for(int i=0; i<words.length; i++){
+            String reversed = reverse(words[i]);
+            if(map.containsKey(reversed) && map.get(reversed)!=i){
+                res.add(Arrays.asList(i,map.get(reversed)));
+            }
+        }
+        
+        for(int i=0; i<words.length; i++){
+            String curr = words[i];
+            for(int cut=1; cut<curr.length(); cut++){
+                // substring(cut) 是cut往后
+                if(isPalinderome(curr.substring(cut))){
+                    String reversed = reverse(curr.substring(0,cut));
+                    if(map.containsKey(reversed) && i!=map.get(reversed))
+                        res.add(Arrays.asList(i,map.get(reversed)));
+                }
+                if(isPalinderome(curr.substring(0,cut))){
+                    String reversed = reverse(curr.substring(cut));
+                    if(map.containsKey(reversed) && i!=map.get(reversed))
+                        res.add(Arrays.asList(map.get(reversed),i));
+                }
+            }
+        }
+        return res;
+    }
+
+    private boolean isPalinderome(String str){      
+        int left = 0;
+        int right = str.length()-1;
+        while(left<right){
+            if(str.charAt(left) != str.charAt(right)) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+    
+    // 操作少量的数据用string
+    // 多线程操作字符串缓冲区下操作大量数据用 stringBuffer
+    // 单线程操作字符串缓冲区下操作大量数据用 stringBuilder
+    // toString是object里面已经有的方法，所有类都继承object，所以所有对象都有这个方法
+    private String reverse(String str){
+        StringBuilder sb = new StringBuilder(str).reverse();
+        return sb.toString();
+        
+    }
+}
