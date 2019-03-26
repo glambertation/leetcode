@@ -1,3 +1,5 @@
+Hilbert曲线可以无限阶下去，从1阶开始，落在一个矩阵里，让你写个function，三个参数（x,y,阶数），return 这个点（x,y）是在这阶curve里从原点出发的第几步
+
 https://blog.csdn.net/x_iya/article/details/78536132
 
 int hilbertCurve(int x, int y, int iter) {
